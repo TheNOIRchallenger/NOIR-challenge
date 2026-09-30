@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="NOIR — a private, professional resource vault for links, images and reports.">
+<title>NOIR — Resource Vault</title>
+<style>
+:root{--bg:#050505;--panel:#0b0b0d;--line:#242428;--text:#f5f5f5;--muted:#8d8d94}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+.app{min-height:100vh;display:grid;grid-template-columns:240px 1fr}.side{border-right:1px solid var(--line);padding:26px 18px;background:#070708;display:flex;flex-direction:column}
+.brand{font-weight:800;letter-spacing:.18em;display:flex;gap:10px;align-items:center;padding:0 8px}.logo{border:2px solid #fff;width:28px;height:28px;display:grid;place-items:center;font-size:11px}
+nav{margin-top:32px;display:grid;gap:5px}nav button{border:0;background:transparent;color:#85858b;text-align:left;padding:12px;border-radius:8px;cursor:pointer}nav button.active,nav button:hover{background:#151518;color:#fff}
+.note{margin-top:auto;color:#5f5f65;font-size:11px;line-height:1.6;padding:8px}.main{max-width:1450px;width:100%;margin:auto;padding:36px 42px}
+header{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:30px}.eyebrow{text-transform:uppercase;letter-spacing:.2em;font-size:10px;color:#707076;margin-bottom:8px}h1{font-size:35px;letter-spacing:-.04em;margin:0}.sub{color:#777;font-size:13px;margin-top:8px}
+.actions{display:flex;gap:8px}.btn{background:#0d0d0f;border:1px solid var(--line);color:#fff;border-radius:8px;padding:10px 14px;cursor:pointer}.btn:hover{background:#17171a}.btn.primary{background:#fff;color:#000;border-color:#fff;font-weight:700}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:25px}.stat{border:1px solid var(--line);background:var(--panel);border-radius:11px;padding:17px}.stat small{color:#707076;text-transform:uppercase;letter-spacing:.13em;font-size:9px}.stat strong{display:block;font-size:27px;margin-top:8px}
+.toolbar{display:flex;gap:10px;margin-bottom:16px}.search{flex:1;background:#0c0c0e;border:1px solid var(--line);border-radius:8px;padding:12px;color:#fff;outline:0}.search:focus{border-color:#777}select{background:#0c0c0e;color:#ddd;border:1px solid var(--line);border-radius:8px;padding:11px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:18px;min-height:175px;display:flex;flex-direction:column;justify-content:space-between}.card:hover{border-color:#454549;transform:translateY(-2px);transition:.15s}.cardtop{display:flex;justify-content:space-between}.icon{width:36px;height:36px;border:1px solid #2e2e32;border-radius:8px;display:grid;place-items:center}.type{font-size:9px;letter-spacing:.15em;color:#707076;text-transform:uppercase}.card h3{font-size:16px;margin:14px 0 7px}.card p{font-size:13px;color:#85858b;line-height:1.5;margin:0}.meta{font-size:11px;color:#626268;display:flex;justify-content:space-between;margin-top:20px}.open{color:#fff;text-decoration:none}.empty{text-align:center;color:#777;border:1px dashed #29292d;padding:50px;border-radius:12px;display:none}
+@media(max-width:900px){.app{grid-template-columns:75px 1fr}.brand span,nav span,.note{display:none}nav button{text-align:center}.main{padding:25px}.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){.side{display:none}.app{display:block}.main{padding:22px 15px}header{align-items:flex-start}.actions .btn:first-child{display:none}.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.toolbar{flex-wrap:wrap}.search{min-width:100%}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="logo">N</div><span>NOIR</span></div>
+  <nav>
+    <button class="active" data-filter="all">▦ <span>Overview</span></button>
+    <button data-filter="link">↗ <span>Links</span></button>
+    <button data-filter="image">◈ <span>Images</span></button>
+    <button data-filter="report">▤ <span>Reports</span></button>
+  </nav>
+  <div class="note">PUBLIC VIEW<br>READ-ONLY<br><br>Content is controlled by the site owner.</div>
+</aside>
+<main class="main">
+<header>
+  <div><div class="eyebrow">Private Resource Vault</div><h1>NOIR</h1><div class="sub">Curated links, images and reports — presented in a clean read-only workspace.</div></div>
+  <div class="actions"><button class="btn" onclick="window.print()">Print</button><button class="btn primary" onclick="copySiteLink()">Copy site link</button></div>
+</header>
+<section class="stats">
+<div class="stat"><small>Total resources</small><strong id="total">00</strong></div>
+<div class="stat"><small>Links</small><strong id="links">00</strong></div>
+<div class="stat"><small>Images</small><strong id="images">00</strong></div>
+<div class="stat"><small>Reports</small><strong id="reports">00</strong></div>
+</section>
+<div class="toolbar"><input class="search" id="search" placeholder="Search resources…"><select id="sort"><option value="new">Newest first</option><option value="az">A–Z</option></select></div>
+<section class="grid" id="grid"></section><div class="empty" id="empty">No resources match your search.</div>
+</main></div>
+<script>
+/*
+  OWNER CONTENT:
+  Edit only the RESOURCE_DATA array below, then publish your changes.
+  Visitors have no add/remove controls in this public build.
+*/
+const RESOURCE_DATA=[
+ {title:"Project Brief",type:"report",desc:"Executive overview, objectives and delivery notes.",meta:"PDF · 2.4 MB",url:"#"},
+ {title:"Brand Reference",type:"image",desc:"Visual reference board for the current design system.",meta:"Image",url:"#"},
+ {title:"Research Notes",type:"report",desc:"Collected findings and source material.",meta:"PDF · 1.8 MB",url:"#"},
+ {title:"Design Inspiration",type:"image",desc:"Curated visual references and interface patterns.",meta:"Image",url:"#"},
+ {title:"OpenAI",type:"link",desc:"AI research, products and developer resources.",meta:"External link",url:"https://openai.com"},
+ {title:"GitHub",type:"link",desc:"Code repositories, issues and project documentation.",meta:"External link",url:"https://github.com"}
+];
+const icons={link:"↗",image:"◈",report:"▤"}, labels={link:"Link",image:"Image",report:"Report"};
+const grid=document.getElementById("grid"),empty=document.getElementById("empty");
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function render(){
+ let q=document.getElementById("search").value.toLowerCase(), sort=document.getElementById("sort").value;
+ let data=RESOURCE_DATA.filter(r=>[r.title,r.desc,r.type,r.meta].join(" ").toLowerCase().includes(q));
+ if(sort==="az")data.sort((a,b)=>a.title.localeCompare(b.title));
+ grid.innerHTML=data.map(r=>`<article class="card"><div><div class="cardtop"><div class="icon">${icons[r.type]}</div><div class="type">${labels[r.type]}</div></div><h3>${esc(r.title)}</h3><p>${esc(r.desc)}</p></div><div class="meta"><span>${esc(r.meta)}</span><a class="open" href="${esc(r.url)}" target="_blank" rel="noopener">Open →</a></div></article>`).join("");
+ empty.style.display=data.length?"none":"block";
+ document.getElementById("total").textContent=String(RESOURCE_DATA.length).padStart(2,"0");
+ ["link","image","report"].forEach(t=>document.getElementById(t+"s").textContent=String(RESOURCE_DATA.filter(r=>r.type===t).length).padStart(2,"0"));
+}
+function copySiteLink(){navigator.clipboard?.writeText(location.href).then(()=>alert("Site link copied."))}
+document.getElementById("search").oninput=render;document.getElementById("sort").onchange=render;
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById("search").value=b.dataset.filter==="all"?"":b.dataset.filter;render()});
+render();
+</script>
+</body>
+</html>
